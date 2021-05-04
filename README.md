@@ -24,6 +24,7 @@ Features
   - Google BigQuery
   - IBM Netezza
   - SQLite
+  - Apache Spark
 - Statements for executing queries with 
   - Error reporting to file
   - Progress reporting

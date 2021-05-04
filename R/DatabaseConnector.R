@@ -62,7 +62,7 @@ NULL
 #' using \code{install.packages("RSQLite")}.
 #' 
 #' @section 
-#' Spark: Go to \href{https://www.simba.com/drivers/spark-jdbc-odbc/}{Simba Spark site} and 
+#' Spark: Go to \href{https://databricks.com/spark/jdbc-drivers-download}{Simba Spark site} and 
 #' download the latest JDBC driver (license may be required).
 NULL
 

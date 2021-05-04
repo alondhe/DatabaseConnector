@@ -39,7 +39,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
+    <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -64,11 +64,11 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://ohdsi.github.io/Hades"><img src='https://ohdsi.github.io/Hades/images/hadesMini.png' width=80 height=17 style='vertical-align: top;'></a>
+  <a href="https://ohdsi.github.io/Hades">hadesLogo</a>
 </li>
 <li>
   <a href="https://github.com/OHDSI/DatabaseConnector/">
-    <span class="fab fa-github fa-lg"></span>
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -82,13 +82,14 @@
 
       
 
-      </header><script src="UsingDatabaseConnector_files/header-attrs-2.6/header-attrs.js"></script><div class="row">
+      </header><script src="UsingDatabaseConnector_files/header-attrs-2.5/header-attrs.js"></script><link href="UsingDatabaseConnector_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
+<script src="UsingDatabaseConnector_files/anchor-sections-1.0/anchor-sections.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Using DatabaseConnector</h1>
                         <h4 class="author">Martijn J. Schuemie</h4>
             
-            <h4 class="date">2021-04-12</h4>
+            <h4 class="date">2021-05-04</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/OHDSI/DatabaseConnector/blob/master/vignettes/UsingDatabaseConnector.Rmd"><code>vignettes/UsingDatabaseConnector.Rmd</code></a></small>
       <div class="hidden name"><code>UsingDatabaseConnector.Rmd</code></div>
@@ -112,6 +113,7 @@
 <li>Google BigQuery</li>
 <li>IBM Netezza</li>
 <li>SQLite</li>
+<li>Apache Spark</li>
 </ul>
 </div>
 <div id="obtaining-drivers" class="section level1">
@@ -131,10 +133,10 @@
 <pre><code>## DatabaseConnector JDBC drivers downloaded to 'c:/temp/jdbcDrivers'.</code></pre>
 <p>Note that if we hadn’t specified the <code>DATABASECONNECTOR_JAR_FOLDER</code> environmental variable, we would have to specify the <code>pathToDriver</code> argument when calling <code>downloadJdbcDrivers</code>.</p>
 </div>
-<div id="obtaining-drivers-for-bigquery-netezza-and-impala" class="section level2">
+<div id="obtaining-drivers-for-bigquery-netezza-impala-and-spark" class="section level2">
 <h2 class="hasAnchor">
-<a href="#obtaining-drivers-for-bigquery-netezza-and-impala" class="anchor"></a>Obtaining drivers for BigQuery, Netezza and Impala</h2>
-<p>Because of licensing reasons the drivers for BigQuery, Netezza and Impala are not included but must be obtained by the user. Type</p>
+<a href="#obtaining-drivers-for-bigquery-netezza-impala-and-spark" class="anchor"></a>Obtaining drivers for BigQuery, Netezza, Impala, and Spark</h2>
+<p>Because of licensing reasons the drivers for BigQuery, Netezza, Impala, and Spark are not included but must be obtained by the user. Type</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="op">?</span><span class="va">jdbcDrivers</span></code></pre></div>
 <p>for instructions on how to download these drivers. Once downloaded, you can use the <code>pathToDriver</code> argument of the <code>connect</code>, <code>dbConnect</code>, and <code>createConnectionDetails</code> functions. Just like for the other JDBC drivers, we recommend setting the <code>DATABASECONNECTOR_JAR_FOLDER</code> environmental variable instead.</p>

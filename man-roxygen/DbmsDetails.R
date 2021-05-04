@@ -8,6 +8,7 @@
 #'                             \item {"netezza" for IBM Netezza}
 #'                             \item {"bigquery" for Google BigQuery}
 #'                             \item {"sqlite" for SQLite}
+#'                             \item {"spark for Apache Spark}
 #'                           }
 #'
 
@@ -114,6 +115,17 @@
 #' SQLite:
 #' \itemize{
 #'   \item \code{server}. The path to the SQLIte file
+#' }
+#' Spark:
+#' \itemize{
+#'   \item \code{user}. The user used to log in to the server
+#'   \item \code{password}. The password used to log on to the server
+#'   \item \code{server}. This field contains the host name of the server
+#'   \item \code{extraSettings} The configuration settings for the connection (i.e. SSL Settings such
+#'         as "ssl=true"). Use a list item of "sparkConfig" to store Spark session configuration commands in 1 line 
+#'         (i.e. "sparkConfig='set spark.sql.crossJoin.enabled = true; set spark.sql.autoBroadcastJoinThreshold = -1;'").
+#'   \item \code{pathToDriver} The path to the folder containing the Apache Spark JDBC driver JAR file
+#'         (SparkJDBC41.jar).
 #' }
 #'
 #' To be able to use Windows authentication for SQL Server (and PDW), you have to install the JDBC

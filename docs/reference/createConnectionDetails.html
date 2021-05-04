@@ -87,7 +87,7 @@ createConnectionDetails(dbms, connectionString, user, password, pathToDriver)
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
+    <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -112,11 +112,11 @@ createConnectionDetails(dbms, connectionString, user, password, pathToDriver)
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://ohdsi.github.io/Hades"><img src='https://ohdsi.github.io/Hades/images/hadesMini.png' width=80 height=17 style='vertical-align: top;'></a>
+  <a href="https://ohdsi.github.io/Hades">hadesLogo</a>
 </li>
 <li>
   <a href="https://github.com/OHDSI/DatabaseConnector/">
-    <span class="fab fa-github fa-lg"></span>
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -164,6 +164,7 @@ database. There are three ways to call this function:</p><ul>
 <li><p>"netezza" for IBM Netezza</p></li>
 <li><p>"bigquery" for Google BigQuery</p></li>
 <li><p>"sqlite" for SQLite</p></li>
+<li><p>"spark for Apache Spark</p></li>
 </ul></td>
     </tr>
     <tr>
@@ -286,6 +287,15 @@ interpretations:</p>
 <li><p><code>pathToDriver</code> The path to the folder containing the Impala JDBC driver JAR files.</p></li>
 </ul><p>SQLite:</p><ul>
 <li><p><code>server</code>. The path to the SQLIte file</p></li>
+</ul><p>Spark:</p><ul>
+<li><p><code>user</code>. The user used to log in to the server</p></li>
+<li><p><code>password</code>. The password used to log on to the server</p></li>
+<li><p><code>server</code>. This field contains the host name of the server</p></li>
+<li><p><code>extraSettings</code> The configuration settings for the connection (i.e. SSL Settings such
+        as "ssl=true"). Use a list item of "sparkConfig" to store Spark session configuration commands in 1 line 
+        (i.e. "sparkConfig='set spark.sql.crossJoin.enabled = true; set spark.sql.autoBroadcastJoinThreshold = -1;'").</p></li>
+<li><p><code>pathToDriver</code> The path to the folder containing the Apache Spark JDBC driver JAR file
+        (SparkJDBC41.jar).</p></li>
 </ul>
 
 <p>To be able to use Windows authentication for SQL Server (and PDW), you have to install the JDBC

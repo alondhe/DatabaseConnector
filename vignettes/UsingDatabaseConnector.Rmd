@@ -36,6 +36,7 @@ Supported database platforms:
 * Google BigQuery
 * IBM Netezza
 * SQLite
+* Apache Spark
 
 # Obtaining drivers 
 
@@ -62,9 +63,9 @@ writeLines("DatabaseConnector JDBC drivers downloaded to 'c:/temp/jdbcDrivers'."
 
 Note that if we hadn't specified the `DATABASECONNECTOR_JAR_FOLDER` environmental variable, we would have to specify the `pathToDriver` argument when calling `downloadJdbcDrivers`.
 
-## Obtaining drivers for BigQuery, Netezza and Impala
+## Obtaining drivers for BigQuery, Netezza, Impala, and Spark
 
-Because of licensing reasons the drivers for BigQuery, Netezza and Impala are not included but must be obtained by the user. Type
+Because of licensing reasons the drivers for BigQuery, Netezza, Impala, and Spark are not included but must be obtained by the user. Type
 
 ```{r eval=FALSE}
 ?jdbcDrivers
