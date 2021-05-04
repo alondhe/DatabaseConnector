@@ -1,6 +1,10 @@
 DatabaseConnector 4.0.2
 =======================
 
+Changes:
+
+1. Added Apache Spark support.
+
 Bugfixes: 
 
 1. Fixing handling of tibbles when inserting tables to avoid issues with date fields.
@@ -96,7 +100,7 @@ DatabaseConnector 2.4.3
 
 Changes:
 
-1. Adding bulk upload for Hive and Spark.
+1. Adding bulk upload for Hive.
 
 Bugfixes:
 
