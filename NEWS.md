@@ -96,7 +96,7 @@ DatabaseConnector 2.4.3
 
 Changes:
 
-1. Adding bulk upload for Hive.
+1. Adding bulk upload for Hive and Spark.
 
 Bugfixes:
 

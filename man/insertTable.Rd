@@ -42,7 +42,7 @@ be located.}
 emulate temp tables, provide a schema with write privileges where temp tables
 can be created.}
 
-\item{bulkLoad}{If using Redshift, PDW, Hive or Postgres, use more performant bulk loading 
+\item{bulkLoad}{If using Redshift, PDW, Hive, Spark, or Postgres, use more performant bulk loading 
 techniques. Does not work for temp tables (except for HIVE). See Details for 
 requirements for the various platforms.}
 

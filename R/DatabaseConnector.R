@@ -61,6 +61,9 @@ NULL
 #' SQLite: For SQLite we actually don't use a JDBC driver. Instead, we use the RSQLite package, which can be installed
 #' using \code{install.packages("RSQLite")}.
 #' 
+#' @section 
+#' Spark: Go to \href{https://www.simba.com/drivers/spark-jdbc-odbc/}{Simba Spark site} and 
+#' download the latest JDBC driver (license may be required).
 NULL
 
 # Borrowed from devtools: https://github.com/hadley/devtools/blob/ba7a5a4abd8258c52cb156e7b26bb4bf47a79f0b/R/utils.r#L44

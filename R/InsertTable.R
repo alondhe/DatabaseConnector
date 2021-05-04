@@ -101,7 +101,7 @@ trySettingAutoCommit <- function(connection, value) {
 #' @param tempEmulationSchema Some database platforms like Oracle and Impala do not truly support temp tables. To
 #'                            emulate temp tables, provide a schema with write privileges where temp tables
 #'                            can be created.
-#' @param bulkLoad            If using Redshift, PDW, Hive or Postgres, use more performant bulk loading 
+#' @param bulkLoad            If using Redshift, PDW, Hive, Spark, or Postgres, use more performant bulk loading 
 #'                            techniques. Does not work for temp tables (except for HIVE). See Details for 
 #'                            requirements for the various platforms.
 #' @param useMppBulkLoad      DEPRECATED. Use \code{bulkLoad} instead.
@@ -233,9 +233,9 @@ insertTable.default <- function(connection,
       data <- as.data.frame(data)
   }
   isSqlReservedWord(c(tableName, colnames(data)), warn = TRUE)
-  useBulkLoad <- (bulkLoad && connection@dbms %in% c("hive", "redshift") && createTable) ||
+  useBulkLoad <- (bulkLoad && connection@dbms %in% c("hive", "redshift", "spark") && createTable) ||
     (bulkLoad && connection@dbms %in% c("pdw", "postgresql") && !tempTable)
-  useCtasHack <- connection@dbms %in% c("pdw", "redshift", "bigquery", "hive") && createTable && nrow(data) > 0 && !useBulkLoad
+  useCtasHack <- connection@dbms %in% c("pdw", "redshift", "bigquery", "hive", "spark") && createTable && nrow(data) > 0 && !useBulkLoad
   
   sqlDataTypes <- sapply(data, getSqlDataTypes)
   sqlTableDefinition <- paste(.sql.qescape(names(data), TRUE, connection@identifierQuote), sqlDataTypes, collapse = ", ")
@@ -279,6 +279,8 @@ insertTable.default <- function(connection,
       bulkLoadHive(connection, sqlTableName, sqlFieldNames, data)
     } else if (connection@dbms == "postgresql") {
       bulkLoadPostgres(connection, sqlTableName, sqlFieldNames, sqlDataTypes, data) 
+    } else if (connection@dbms == "spark") {
+      bulkLoadSpark(connection, sqlTableName, sqlFieldNames, sqlDataTypes, data)
     }
   } else if (useCtasHack) {
     # Inserting using CTAS hack ----------------------------------------------------------------

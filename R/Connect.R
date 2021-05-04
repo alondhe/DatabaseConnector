@@ -513,6 +513,48 @@ connect <- function(connectionDetails = NULL,
     attr(connection, "dbms") <- dbms
     return(connection)
   }
+  if (dbms == "spark") {
+    writeLines("Connecting using Spark driver")
+    jarPath <- findPathToJar("^SparkJDBC.*\\.jar$", pathToDriver)
+    driver <- getJbcDriverSingleton("com.simba.spark.jdbc41.Driver", jarPath)
+    sparkConfig <- NA
+    
+    if (missing(connectionString) || is.null(connectionString)) {
+      
+      if (!grepl("/", server))
+        stop("Error: database name not included in server string but is required for Spark. Please specify server as <host>/<database>")
+      parts <- unlist(strsplit(server, "/"))
+      host <- parts[1]
+      database <- parts[2]
+      if (missing(port) || is.null(port)) {
+        port <- "443"
+      }
+      connectionString <- paste("jdbc:spark://", host, ":", port, "/", database, sep = "")
+      
+      if (!missing(extraSettings) && !is.null(extraSettings)) {
+        if (!is.null(extraSettings[["sparkConfig"]])) {
+          sparkConfig <- extraSettings[["sparkConfig"]]
+          extraSettings <- extraSettings[names(extraSettings) %in% "sparkConfig" == FALSE] 
+        }
+        connectionString <- sprintf("%s;%s", connectionString,
+                                    paste(names(extraSettings), extraSettings, sep = "=", collapse=";"))
+      }
+      
+      connectionString <- sprintf("%s;UID=%s;PWD=%s", connectionString, user, password)
+    }
+    
+    connection <- connectUsingJdbcDriver(driver,
+                                         connectionString,
+                                         dbms = dbms)
+    if (!is.na(sparkConfig)) {
+      print(sprintf("Setting Spark configuration: '%s'", sparkConfig))
+      DatabaseConnector::executeSql(connection = connection, sql = sparkConfig)
+    }
+    
+    attr(connection, "dbms") <- dbms
+    
+    return(connection)
+  }
 }
 
 connectUsingJdbcDriver <- function(jdbcDriver,
