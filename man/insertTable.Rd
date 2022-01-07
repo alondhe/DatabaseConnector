@@ -38,11 +38,11 @@ be located.}
 
 \item{oracleTempSchema}{DEPRECATED: use \code{tempEmulationSchema} instead.}
 
-\item{tempEmulationSchema}{Some database platforms like Oracle and Impala do not truly support temp tables. To
+\item{tempEmulationSchema}{Some database platforms like Oracle, Impala, and Spark do not truly support temp tables. To
 emulate temp tables, provide a schema with write privileges where temp tables
 can be created.}
 
-\item{bulkLoad}{If using Redshift, PDW, Hive or Postgres, use more performant bulk loading
+\item{bulkLoad}{If using Redshift, PDW, Hive, Spark, or Postgres, use more performant bulk loading
 techniques. Does not work for temp tables (except for HIVE). See Details for
 requirements for the various platforms.}
 
@@ -81,6 +81,14 @@ of the binary.
 PostgreSQL:
 Uses the 'pg' executable to upload. Set the POSTGRES_PATH environment variable  to the Postgres
 binary path, e.g. 'C:/Program Files/PostgreSQL/11/bin'.
+
+Spark: The MPP bulk loading here is for Databricks systems only, and requires access to the Databricks
+File System (DBFS). Here, we will take the data frame, upload as a flat file to DBFS,
+then run Spark SQL scripts to load into a staging table, before finally loading into
+your destination table.
+
+A DBFS file path pointing to the Databricks CLI (https://docs.databricks.com/dev-tools/cli/index.html), 
+a root folder in DBFS to store the files, and a Databricks staging schema are needed.
 }
 \examples{
 \dontrun{

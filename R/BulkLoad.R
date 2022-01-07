@@ -1,6 +1,6 @@
 # @file BulkLoad.R
 #
-# Copyright 2021 Observational Health Data Sciences and Informatics
+# Copyright 2022 Observational Health Data Sciences and Informatics
 #
 # This file is part of DatabaseConnector
 #
@@ -59,6 +59,14 @@ checkBulkLoadCredentials <- function(connection) {
   } else if (connection@dbms == "postgresql") {
     if (Sys.getenv("POSTGRES_PATH") == "") {
       inform("Please set environment variable POSTGRES_PATH to Postgres binary path (e.g. 'C:/Program Files/PostgreSQL/11/bin'.")
+      return(FALSE)
+    }
+    return(TRUE)
+  } else if (connection@dbms == "spark") {
+    if (Sys.getenv("DATABRICKS_DBFS_PATH") == "" |
+      Sys.getenv("DATABRICKS_ROOT_FOLDER") == "" |
+      Sys.getenv("DATABRICKS_STAGING_SCHEMA") == "") {
+      inform("Please set environment variables DATABRICKS_DBFS_PATH (pointing to Databricks CLI), DATABRICKS_ROOT_FOLDER, and DATABRICKS_STAGING_SCHEMA.")
       return(FALSE)
     }
     return(TRUE)
@@ -339,6 +347,82 @@ bulkLoadPostgres <- function(connection, sqlTableName, sqlFieldNames, sqlDataTyp
 
   delta <- Sys.time() - startTime
   inform(paste("Bulk load to PostgreSQL took", signif(delta, 3), attr(delta, "units")))
+}
+
+bulkLoadSpark <- function(connection, sqlTableName, sqlFieldNames, sqlDataTypes, data) {
+  uploadToDbfs <- function(rootFolder,
+                           fileName) {
+    command <- sprintf(
+      "%s cp %s.txt dbfs:/%s/%s.txt",
+      Sys.getenv("DATABRICKS_DBFS_PATH"),
+      fileName, rootFolder, basename(fileName)
+    )
+    print(command)
+    tryCatch(
+      {
+        system(command,
+          intern = FALSE,
+          ignore.stdout = FALSE,
+          ignore.stderr = FALSE,
+          wait = TRUE,
+          input = NULL
+        )
+      },
+      error = function(e) {
+        writeLines(sprintf(
+          "DBFS Upload ERROR: %s",
+          basename(fileName)
+        ))
+      }
+    )
+  }
+  start <- Sys.time()
+  tableName <- (strsplit(x = sqlTableName, split = ".", fixed = TRUE))[[1]][[2]]
+
+  fileName <- file.path(tempdir(), sprintf("databricks_insert_%s", uuid::UUIDgenerate(use.time = TRUE)))
+  write.table(x = data, file = sprintf("%s.txt", fileName), row.names = FALSE, col.names = FALSE, sep = "\t", quote = FALSE)
+  uploadToDbfs(
+    rootFolder = Sys.getenv("DATABRICKS_ROOT_FOLDER"),
+    fileName = fileName
+  )
+
+  tableDdl <- lapply(names(sqlDataTypes), function(s) {
+    sprintf("%s %s", s, sqlDataTypes[[s]])
+  })
+
+  loadSql <- SqlRender::loadRenderTranslateSql(
+    sqlFilename = "databricksLoad.sql",
+    packageName = "DatabaseConnector",
+    dbms = "sql server",
+    tableDdl = SqlRender::translate(paste(tableDdl, collapse = ","), "spark"),
+    stagingDatabaseSchema = Sys.getenv("DATABRICKS_STAGING_SCHEMA"),
+    tableName = tableName,
+    rootFolder = Sys.getenv("DATABRICKS_ROOT_FOLDER"),
+    fileName = basename(fileName)
+  )
+
+  finalSql <- SqlRender::loadRenderTranslateSql(
+    sqlFilename = "databricksFinalTable.sql",
+    packageName = "DatabaseConnector",
+    dbms = "spark",
+    qname = sqlTableName,
+    stagingDatabaseSchema = Sys.getenv("DATABRICKS_STAGING_SCHEMA"),
+    tableName = tableName
+  )
+  tryCatch(
+    {
+      DatabaseConnector::executeSql(connection = connection, sql = loadSql, reportOverallTime = FALSE)
+      DatabaseConnector::executeSql(connection = connection, sql = finalSql, reportOverallTime = FALSE)
+      delta <- Sys.time() - start
+      writeLines(paste("Bulk load to Databricks took", signif(delta, 3), attr(delta, "units")))
+    },
+    error = function(e) {
+      stop("Error in Databricks bulk upload.")
+    },
+    finally = {
+      try(file.remove(sprintf("%s.txt", fileName)), silent = TRUE)
+    }
+  )
 }
 
 # Borrowed from devtools:

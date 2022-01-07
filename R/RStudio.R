@@ -1,6 +1,6 @@
 # @file RStudio.R
 #
-# Copyright 2021 Observational Health Data Sciences and Informatics
+# Copyright 2022 Observational Health Data Sciences and Informatics
 #
 # This file is part of DatabaseConnector
 #
@@ -76,7 +76,7 @@ unregisterWithRStudio <- function(connection) {
 }
 
 hasCatalogs <- function(connection) {
-  return(connection@dbms %in% c("pdw", "sql server", "postgresql", "redshift", "spark", "bigquery"))
+  return(connection@dbms %in% c("pdw", "sql server", "postgresql", "redshift", "spark", "bigquery", "spark"))
 }
 
 listDatabaseConnectorColumns <- function(connection,

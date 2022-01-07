@@ -36,3 +36,8 @@ your OS version, and click "GET IT NOW!'. Register, and you should be able to do
 using \code{install.packages("RSQLite")}.
 }
 
+\section{Spark}{
+ Go to \href{https://databricks.com/spark/jdbc-drivers-download}{Databricks JDBC site} and 
+download the latest JDBC driver (license may be required).
+}
+

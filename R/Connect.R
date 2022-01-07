@@ -1,6 +1,6 @@
 # @file Connect.R
 #
-# Copyright 2021 Observational Health Data Sciences and Informatics
+# Copyright 2022 Observational Health Data Sciences and Informatics
 #
 # This file is part of DatabaseConnector
 #
@@ -583,23 +583,52 @@ connect <- function(connectionDetails = NULL,
     return(connection)
   }
   if (dbms == "spark") {
-    inform("Connecting using Spark driver")
-    jarPath <- findPathToJar("^SparkJDBC42\\.jar$", pathToDriver)
+    writeLines("Connecting using Spark driver")
+    jarPath <- findPathToJar("^SparkJDBC.*\\.jar$", pathToDriver)
     driver <- getJbcDriverSingleton("com.simba.spark.jdbc.Driver", jarPath)
+    sparkConfig <- NA
+
     if (missing(connectionString) || is.null(connectionString)) {
-      abort("Error: Connection string required for connecting to Spark.")
-    }
-    if (missing(user) || is.null(user)) {
-      connection <- connectUsingJdbcDriver(driver, connectionString, dbms = dbms)
-    } else {
-      connection <- connectUsingJdbcDriver(driver,
-        connectionString,
-        user = user,
-        password = password,
-        dbms = dbms
+      if (!grepl("/", server)) {
+        stop("Error: database name not included in server string but is required for Spark. Please specify server as <host>/<database>")
+      }
+      parts <- unlist(strsplit(server, "/"))
+      host <- parts[1]
+      database <- parts[2]
+      if (missing(port) || is.null(port)) {
+        port <- "443"
+      }
+      connectionString <- sprintf(
+        "jdbc:spark://%s:%s/%s;transportMode=http;ssl=1;AuthMech=3;UseNativeQuery=1",
+        host, port, database
       )
+      # connectionString <- paste("jdbc:spark://", host, ":", port, "/", database, sep = "")
+
+      if (!missing(extraSettings) && !is.null(extraSettings)) {
+        if (!is.null(extraSettings[["sparkConfig"]])) {
+          sparkConfig <- extraSettings[["sparkConfig"]]
+          extraSettings <- extraSettings[names(extraSettings) %in% "sparkConfig" == FALSE]
+        }
+        connectionString <- sprintf(
+          "%s;%s", connectionString,
+          paste(names(extraSettings), extraSettings, sep = "=", collapse = ";")
+        )
+      }
+
+      connectionString <- sprintf("%s;UID=%s;PWD=%s", connectionString, user, password)
     }
+
+    connection <- connectUsingJdbcDriver(driver,
+      connectionString,
+      dbms = dbms
+    )
+    if (!is.na(sparkConfig)) {
+      print(sprintf("Setting Spark configuration: '%s'", sparkConfig))
+      DatabaseConnector::executeSql(connection = connection, sql = sparkConfig)
+    }
+
     attr(connection, "dbms") <- dbms
+
     return(connection)
   }
 }

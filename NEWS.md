@@ -4,6 +4,7 @@ DatabaseConnector 5.0.1
 Changes:
 
 1. Added `dropEmulatedTempTables()` function.
+2. Added Spark support.
 
 Bugfixes:
 

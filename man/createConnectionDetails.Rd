@@ -29,7 +29,9 @@
 
 \item{extraSettings}{(optional) Additional configuration settings specific to the database
 provider to configure things as security for SSL. These must follow the
-format for the JDBC connection for the RDBMS specified in dbms.}
+format for the JDBC connection for the RDBMS specified in dbms.
+If using Spark, you can set session based Spark settings by adding them to 
+an object named "sparkConfig"}
 
 \item{oracleDriver}{Specify which Oracle drive you want to use. Choose between \code{"thin"}
 or \code{"oci"}.}
@@ -152,6 +154,9 @@ Spark:
         'jdbc:spark://my-org.dev.cloud.databricks.com...').
   \item \code{user}. The user name used to access the server.
   \item \code{password}. The password for that user.
+  \item \code{extraSettings} The configuration settings for the connection; you will need to set httpPath here.
+        The transportMode, ssl, AuthMech, and UseNativeQuery settings do not need to be set, as the function handles them.
+  \item \code{pathToDriver} The path to the folder containing the Spark JDBC driver JAR files.
 }
 
 To be able to use Windows authentication for SQL Server (and PDW), you have to install the JDBC
