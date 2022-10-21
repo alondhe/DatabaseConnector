@@ -45,6 +45,7 @@ jdbcDrivers <- new.env()
 #'   \item{Oracle}{V19.8}
 #'   \item{Spark}{V2.6.21}
 #'   \item{Snowflake}{V3.13.22}
+#'   \item{Dremio}{V3.0.6}
 #' }
 #'
 #' @return Invisibly returns the destination if the download was successful.
