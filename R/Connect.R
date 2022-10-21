@@ -31,7 +31,8 @@ checkIfDbmsIsSupported <- function(dbms) {
     "sqlite extended",
     "spark",
     "snowflake",
-    "synapse"
+    "synapse",
+    "dremio"
   )
   if (!dbms %in% supportedDbmss) {
     abort(sprintf(
@@ -606,6 +607,30 @@ connect <- function(connectionDetails = NULL,
     attr(connection, "dbms") <- dbms
     return(connection)
   }
+  if (dbms == "dremio") {
+    inform("Connecting using Dremio driver")
+    jarPath <- findPathToJar("^dremio-jdbc-driver-3\\.0\\.6-.*.jar$", pathToDriver)
+    driver <- getJbcDriverSingleton("com.dremio.jdbc.Driver", jarPath)
+    if (missing(connectionString) || is.null(connectionString) || connectionString == "") {
+      if (missing(port) || is.null(port)) {
+        port <- "31010"
+      }
+      connectionString <- sprintf("jdbc:dremio:direct=%s:%s", server, port)
+    }
+    
+    if (missing(user) || is.null(user)) {
+      connection <- connectUsingJdbcDriver(driver, connectionString, dbms = dbms)
+    } else {
+      connection <- connectUsingJdbcDriver(driver,
+                                           connectionString,
+                                           user = user,
+                                           password = password,
+                                           dbms = dbms
+      )
+    }
+    attr(connection, "dbms") <- dbms
+    return(connection)  
+  }
 }
 
 connectUsingJdbcDriver <- function(jdbcDriver,
@@ -749,7 +774,8 @@ dbms <- function(connection) {
           'RedshiftConnection' = 'redshift',
           'BigQueryConnection' = 'bigquery',
           'SQLiteConnection' = 'sqlite',
-          'duckdb_connection'  = 'duckdb'
+          'duckdb_connection'  = 'duckdb',
+          'Dremio' = 'dremio'
           # add mappings from various DBI connection classes to SqlRender dbms here
   )
 }
