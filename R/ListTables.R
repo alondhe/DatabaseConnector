@@ -54,6 +54,9 @@ getTableNames <- function(connection, databaseSchema) {
         database <- rJava::.jnull("java/lang/String")
         schema <- cleanSchemaName(databaseSchema)
       }
+    } else if (dbms(connection) == "dremio") {
+      database <- rJava::.jnull("java/lang/String")
+      schema <- paste(databaseSchema, collapse = ".")
     } else {
       database <- cleanDatabaseName(databaseSchema[1])
       schema <- cleanSchemaName(databaseSchema[2])

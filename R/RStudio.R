@@ -76,7 +76,7 @@ unregisterWithRStudio <- function(connection) {
 }
 
 hasCatalogs <- function(connection) {
-  return(dbms(connection) %in% c("pdw", "sql server", "synapse", "postgresql", "redshift", "snowflake", "spark", "bigquery"))
+  return(dbms(connection) %in% c("pdw", "sql server", "synapse", "postgresql", "redshift", "snowflake", "spark", "bigquery", "dremio"))
 }
 
 listDatabaseConnectorColumns <- function(connection,
@@ -168,7 +168,7 @@ listDatabaseConnectorObjects <- function(connection, catalog = NULL, schema = NU
       stringsAsFactors = FALSE
     ))
   }
-  if (!hasCatalogs(connection) || dbms(connection) %in% c("postgresql", "redshift", "sqlite", "sqlite extended", "bigquery")) {
+  if (!hasCatalogs(connection) || dbms(connection) %in% c("postgresql", "redshift", "sqlite", "sqlite extended", "bigquery", "dremio")) {
     databaseSchema <- schema
   } else {
     databaseSchema <- paste(catalog, schema, sep = ".")

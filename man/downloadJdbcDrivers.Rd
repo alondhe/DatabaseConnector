@@ -44,6 +44,7 @@ The following versions of the JDBC drivers are currently used:
   \item{Oracle}{V19.8}
   \item{Spark}{V2.6.21}
   \item{Snowflake}{V3.13.22}
+  \item{Dremio}{V3.0.6}
 }
 }
 \examples{
